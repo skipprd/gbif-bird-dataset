@@ -9,17 +9,17 @@ Download the data from [here](https://www.gbif.org/dataset/4fa7b334-ce0d-4e88-aa
 
 ### Converting the data
 
-The data is in a large CSV format. We'll convert to json records and pipe to Skippr.
+The data is in a large CSV format. We'll convert to json records and pipe to Skippr via a little python script courtesy of ChatGPT.
 
-Skippr will discover the schema, partition the data accoding to our config and convert to Parquet.
+Skippr will discover the schema, partition the data according to our config and convert to Parquet on our local machine.
 
-See [Skippr Docs](https://docs.skippr.io) for more info.
+See [Skippr Docs](https://docs.skippr.io) for more info. You'll find documentation on how to sync these files to AWS S3 and Athena, and the schemas propagated to Glue Data Catalog. 
 
 Run the following command to convert the data to partitioned Parquet files:
 
 NOTES: 
 - I've extracted the zip file to `~/Downloads/2021-eBird-dwca-1.0/eod_2021.csv` on my machine.
-- You'll need to replace `INSERT_API_TOCKEN_HERE` with your Skippr Metadata API token.
+- You'll need to replace `INSERT_API_TOKEN_HERE` with your Skippr Metadata API token.
 
 ```bash 
 python3 parse_to_json.py ~/Downloads/2021-eBird-dwca-1.0/eod_2021.csv | docker run -i \
@@ -32,7 +32,7 @@ python3 parse_to_json.py ~/Downloads/2021-eBird-dwca-1.0/eod_2021.csv | docker r
 -e TRANSFORM_BATCH_TIME_UNIT=year \
 -e PIPELINE_NAME=ebirds \
 -e WORKSPACE_NAME=dev \
--e SKIPPR_API_TOKEN=INSERT_API_TOCKEN_HERE \
+-e SKIPPR_API_TOKEN=INSERT_API_TOKEN_HERE \
 -e DATA_DIR=./data \
 -v `pwd`/data:/data \
 skippr/skipprd:stable
@@ -41,7 +41,6 @@ skippr/skipprd:stable
 ### Configuration Notes
 
 `head -n 2` on the CSV file reveals the below columns. 
-Because in this capacity I'm a lazy data engineer with no domain interest. I'm not going to speculate on what the columns mean and certinaly don't want to mess around defining schemas. I must want parquet in my datalake, so I can get back to drinking beer on a Saturday eventing.
 
 It's apparent that the data is partitioned contains year, month and day. So we'll use those values to create an additional field called `date` and configure `TRANSFORM_BATCH_TIME_FIELDS=date` and `TRANSFORM_BATCH_TIME_UNIT=year` to partition the data by year.
 
