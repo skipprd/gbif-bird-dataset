@@ -9,7 +9,7 @@ Download the data from [here](https://www.gbif.org/dataset/4fa7b334-ce0d-4e88-aa
 
 ### Converting the data
 
-The data is in a large CSV format. We'll convert to json records and pipe to Skippr via a little python script courtesy of ChatGPT.
+The data is in a large Zip in CSV format. We'll extract the zip on the fly and convert to json records and pipe to Skippr via a little python script courtesy of ChatGPT.
 
 Skippr will discover the schema, partition the data according to our config and convert to Parquet on our local machine.
 
@@ -22,7 +22,7 @@ NOTES:
 - You'll need to replace `INSERT_API_TOKEN_HERE` with your Skippr Metadata API token.
 
 ```bash 
-python3 parse_to_json.py ~/Downloads/2021-eBird-dwca-1.0/eod_2021.csv | docker run -i \
+python3 parse_to_json.py ~/Downloads/2021-eBird-dwca-1.0.zip | docker run -i \
 -e AWS_PROFILE=skippr-test \
 -e DATA_SOURCE_PLUGIN_NAME=stdin \
 -e DATA_SOURCE_BATCH_SIZE_BYTES=5000000 \
