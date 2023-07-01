@@ -20,10 +20,11 @@ Run the following command to convert the data to partitioned Parquet files:
 NOTES: 
 - I've extracted the zip file to `~/Downloads/2021-eBird-dwca-1.0/eod_2021.csv` on my machine.
 - You'll need to replace `INSERT_API_TOKEN_HERE` with your Skippr Metadata API token.
+- You may need to edit `YOUR_AWS_PROFILE_NAME` to match your AWS CLI profile name. If you use the default profile, you can remove this line.
 
 ```bash 
 python3 parse_to_json.py ~/Downloads/2021-eBird-dwca-1.0.zip | docker run -i \
--e AWS_PROFILE=skippr-test \
+-e AWS_PROFILE=YOUR_AWS_PROFILE_NAME \
 -e DATA_SOURCE_PLUGIN_NAME=stdin \
 -e DATA_SOURCE_BATCH_SIZE_BYTES=5000000 \
 -e DATA_SOURCE_BATCH_SIZE_SECONDS=30 \
